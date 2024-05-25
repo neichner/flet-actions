@@ -11,7 +11,7 @@ export async function run(): Promise<void> {
   try {
     const platform: string = core.getInput('platform')
     const platformType = (() => {
-      switch(platform) {
+      switch (platform) {
         case 'ios':
           return Platform.iOS
         case 'android':
@@ -28,7 +28,7 @@ export async function run(): Promise<void> {
 
     installDependencies(platformType)
     build(platformType)
-    
+
     // Set outputs for other workflow steps to use
     core.setOutput('time', new Date().toTimeString())
   } catch (error) {
