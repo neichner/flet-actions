@@ -1,5 +1,7 @@
 import * as core from '@actions/core'
-import { wait } from './wait'
+import { installDependencies } from './installer'
+import { Platform } from './platform'
+import { build } from './fletbuilder'
 
 /**
  * The main function for the action.
@@ -7,15 +9,25 @@ import { wait } from './wait'
  */
 export async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
+    const platform: string = core.getInput('platform')
+    const platformType = (() => {
+      switch (platform) {
+        case 'ios':
+          return Platform.iOS
+        case 'android':
+          return Platform.Android
+        case 'linux':
+          return Platform.Linux
+        case 'windows':
+          return Platform.Windows
+        case 'macos':
+          return Platform.MacOs
+      }
+      return Platform.Windows
+    })()
 
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
-
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    await installDependencies(platformType)
+    await build(platformType)
 
     // Set outputs for other workflow steps to use
     core.setOutput('time', new Date().toTimeString())
