@@ -2,12 +2,12 @@ import { spawn } from 'child_process'
 import process from 'process'
 
 type CmdResult = {
-  code: Number | null
-  result: any
+  code: number | null
+  result: string
 }
 
-export function cmd(...command: string[]): Promise<CmdResult> {
-  let p = spawn(command[0], command.slice(1))
+export async function cmd(...command: string[]): Promise<CmdResult> {
+  const p = spawn(command[0], command.slice(1))
   let result = ''
   return new Promise(resolve => {
     p.stdout.on('data', x => {
@@ -20,8 +20,8 @@ export function cmd(...command: string[]): Promise<CmdResult> {
     })
     p.on('exit', code => {
       resolve({
-        code: code,
-        result: result
+        code,
+        result
       })
     })
   })
