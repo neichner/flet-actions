@@ -26,8 +26,8 @@ export async function run(): Promise<void> {
       return Platform.Windows
     })()
 
-    installDependencies(platformType)
-    build(platformType)
+    await installDependencies(platformType)
+    await build(platformType)
 
     // Set outputs for other workflow steps to use
     core.setOutput('time', new Date().toTimeString())
